@@ -1,22 +1,27 @@
 const express = require('express');
-const admin = require('firebase-admin')
 const router = express();
-const fireStore = require('../../config');
-
-
-router.post('/addblog', async (req, res, next) => {
-    const data = req.body;
-     fireStore.db.collection('blogs').add(data)
-        .then(() => {
-            return res.status(201).json({ success: true, message: 'Blog created successfully', });
-        });
-})
-
-router.get('/getAll', async (req, res, next) => {
-    const snapShot = await fireStore.db.collection('blogs').get();
-    const data = snapShot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-    return res.status(200).json({ success: true,count:data.length ,data: data });
+const blogCtrl = require('../controller/blog_ctrl')
+// multer is used to get the data from the form data in body to get the upload image
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix + file.originalname);
+  }
 });
 
+const upload = multer({ storage: storage })
 
-module.exports=router;
+
+// to get all blogs
+router.get('/getAll', blogCtrl.getAllBlogs);
+
+ // to upload the blog
+router.post('/upload', upload.single('productImage'), blogCtrl.createBlog);
+
+
+module.exports = router;
+

@@ -1,10 +1,12 @@
+// Firebase config file to connect with firebase
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } = require('firebase-admin/auth');
+
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut ,} = require('firebase-admin/auth');
 
 
 
-const serviceAccount = require('./nodejs-firebase-30957-firebase-adminsdk-2saps-d819436429.json')
+const serviceAccount = require('../../nodejs-firebase-30957-firebase-adminsdk-2saps-d819436429.json')
 // const firebaseConfig = {
 //   apiKey: "AIzaSyAPmXP4aC_WmXII_QScMzgkohZtEJB4ymo",
 //   authDomain: "nodejs-firebase-30957.firebaseapp.com",
@@ -16,7 +18,9 @@ const serviceAccount = require('./nodejs-firebase-30957-firebase-adminsdk-2saps-
 // };
 
 initializeApp({
-  credential: cert(serviceAccount)
+  credential: cert(serviceAccount),
+  databaseURL: 'https://nodejs-firebase-30957-default-rtdb.firebaseio.com/', 
+  storageBucket: 'gs://nodejs-firebase-30957.appspot.com/',
 });
 
 const db = getFirestore();
